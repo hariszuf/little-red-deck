@@ -1,7 +1,7 @@
 {
   "name": "little-red-deck",
   "version": "1.0.0",
-  "description": "Working title for a Singapore-inspired card-reading and cultural collection prototype. Final branding remains open.",
+  "description": "A 22-card Singapore-inspired cultural collection with Nanyang tarot artwork and an interactive Three.js landing page.",
   "directories": {
     "test": "tests"
   },
@@ -9,7 +9,7 @@
     "dev": "python3 -m http.server 4173 --directory dist",
     "test": "node tests/model.test.js && node tests/ui.test.js",
     "check": "node --check dist/app.js && node --check dist/model.js && node --check dist/artwork.js && node --check src/landing.js",
-    "build": "node scripts/build-scene.js && node scripts/package-preview.js",
+    "build": "node scripts/build-scene.js && node scripts/export-cards.js && node scripts/package-preview.js",
     "test:browser": "node tests/browser-check.mjs"
   },
   "repository": {
