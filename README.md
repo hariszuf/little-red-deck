@@ -1,96 +1,132 @@
 # Little Red Deck
 
-Working title for a Singapore-inspired card-reading and cultural collection prototype. Final branding remains open.
+A Singapore-inspired interactive card-reading and cultural collection prototype. Residents and visitors discover a personal card, explore local stories, and build a six-card deck through places and people.
 
-Residents and visitors begin with a general personal reading, then grow a six-card deck by exploring Singapore and meeting other card holders. The intended aims are tourism, personal cultural connection, and social interaction.
+**[Open the live prototype](https://little-red-deck.fizzyeel16.chatgpt.site)** — currently private and restricted to the site owner.
 
-## Planned experience
+## The experience
 
-1. Answer a personal questionnaire.
-2. Watch the whole deck shuffle, then draw and flip a card to reveal a personal card and general reading.
+1. Answer three personal questions.
+2. Watch all six cards shuffle, draw a card, and flip it to reveal your personal card and reading.
 3. Scan a place QR, read a short cultural story, and press **Collect card**.
-4. Scan another person's personal-card QR to receive a copy. Both people keep their cards.
-5. Earn points for each new card and a bonus for completing all six.
+4. Scan another person’s personal-card QR to receive a copy. Both people keep their cards.
+5. Earn **10 points per new card** and a **50-point bonus** for completing all six.
 
-## Confirmed prototype deck
+The initial personal card earns points too. Duplicate cards earn no extra points, and the completion bonus is awarded once. A full deck earns **110 points**.
 
-| Theme | Card | Working reading theme |
-| --- | --- | --- |
-| Food | Hainanese chicken rice | Comfort, simplicity, affordability |
-| Food | Kaya toast | Familiarity and beginnings |
-| Everyday rituals | Kopitiam gathering | Connection and taking a pause |
-| Everyday rituals | Wet-market visit | Exchange and providing |
-| Arts | Nyonya beadwork | Patience and craft |
-| Arts | Wayang kulit | Perspective and storytelling |
+## Design
 
-The reading themes are creative prototype interpretations. Cultural stories will be grounded in credited sources. These subjects have community and regional histories; the project explores their place in Singapore.
+### Nanyang-inspired tarot cards
 
-## Interactive prototype
+The six original SVG cards combine tall tarot compositions, Roman numerals, symbolic titles and celestial borders with tropical foliage, shophouse details and everyday Singapore subjects. Jade, vermilion, ochre and aged-paper tones form the Nanyang-inspired palette. The ornamental card backs carry a matching floral and tile motif.
 
-The first browser-local prototype is implemented in `dist/`. It contains three questionnaire questions, a visible six-card shuffle, draw and flip reveal, a personal reading, place and person QR flows, a six-card collection, and points. Six original SVG illustrations accompany the confirmed deck.
+These are contemporary creative interpretations. The subjects have community and regional histories; the project explores their place in Singapore.
 
-For an immediate preview, open `prototype.html` directly in a browser. It bundles the styles, artwork, logic and QR library. If file-origin storage is unavailable, progress lasts for the current tab. Regenerate it after changes with `npm run build`. For camera access and shareable links, serve the prototype instead.
+| Theme | Card | Symbolic title | Reading theme |
+| --- | --- | --- | --- |
+| Food | Hainanese chicken rice | The Nourisher | Comfort |
+| Food | Kaya toast | The Beginning | Beginnings |
+| Everyday rituals | Kopitiam gathering | The Gathering | Connection |
+| Everyday rituals | Wet-market visit | The Exchange | Exchange |
+| Arts | Nyonya beadwork | The Maker | Patience |
+| Arts | Wayang kulit | The Storyteller | Perspective |
 
-Run from this repository:
+### Three.js landing page
 
-```sh
-npm run dev
-```
+The landing page draws on Persona’s graphic energy: oversized condensed typography, angled panels, dark ink against vermilion, and sharp labels. The content and artwork are original to Little Red Deck.
 
-Then open http://localhost:4173 in your browser. Serving `dist/` with any static HTTP server also works; the checked-in `dist/` output is ready to serve. Run `npm run build` after source changes to bundle the Three.js scene and regenerate the standalone preview. The runtime bundles Three.js locally, vendors QR generation and self-hosts the Anton display font, so it needs no external scripts, font servers or image services.
+A Three.js scene renders the illustrated cards as a 3D fan. Drag to turn it, tap a card to select it, or use the six keyboard-accessible preview buttons below. Reduced-motion mode keeps the scene still, and browsers without WebGL receive a static illustrated fan. Rendering pauses when the scene is off-screen or the page is hidden; leaving the landing page disposes its GPU resources.
 
-### Try the complete flow
+## Run locally
 
-1. Choose **Find my personal card**, answer three questions, shuffle, draw and flip.
-2. Open **Scan a QR** and choose a demo place. Read the story, then choose **Collect card**.
-3. Switch to **Person’s QR** to receive a copy of another personal-card type. The original stays with its owner.
-4. Collect all six to see the completion bonus. Try the same code again to verify duplicate feedback.
-5. Open your personal card and choose **Share my card** for a real QR containing its link. A second browser can receive the copy when the site is reachable there. Codes such as `person:kaya-toast` and `place:beadwork` can also be pasted into the scanner.
-
-### Prototype choices and limits
-
-- Draft scoring: 10 points per unique card, including the initial personal card; 50 bonus points once all six are collected. Maximum: 110. No redemption scheme.
-- Draft matching: the sum of the three answer indexes selects one of the six cards. Creative reading text is a reflection, not a prediction or validated assessment.
-- Progress stays in local storage in the current browser. No accounts, backend, location verification, owner registry or answer transmission. Reset requires a confirmation in the interface.
-- Person QR links share a card type. They neither transfer nor remove the sender’s card; they do not contain questionnaire answers. Demo person codes simulate encounters, rather than proving another owner exists.
-- Camera scanning uses the native BarcodeDetector API where supported and requires a secure origin (HTTPS or localhost), permission and camera hardware. Other browsers can paste links/codes or use demos.
-- Place codes are illustrative; no physical QR installation or venue partnership exists. Cultural summaries link to the sources below; editorial/community review remains open.
-- Private Sites URL: https://little-red-deck.fizzyeel16.chatgpt.site . Access is restricted to the owner. Source is maintained in `/workspace/sites/little-red-deck`; the original GitHub checkout is mirrored without pushing GitHub.
-
-### Checks
+Use **Node.js 24 or newer** and **Python 3** for the commands below.
 
 ```sh
 npm ci
+npm run dev
+```
+
+Open [http://localhost:4173](http://localhost:4173).
+
+The checked-in `dist/` directory is ready to serve with any static HTTP server. Runtime dependencies, artwork and the Anton display font are served locally; the app does not require external scripts, font servers or image services.
+
+After changing the source, rebuild the Three.js bundle and standalone preview:
+
+```sh
+npm run build
+```
+
+You can also open `prototype.html` directly in a browser. It bundles the app, styles, artwork, font and libraries into one file. If file-origin storage is unavailable, progress lasts for the current tab. Use a served site for camera access and cross-device QR links.
+
+## Try the complete flow
+
+1. Choose **Draw your personal card**, answer the questionnaire, then shuffle, draw and flip.
+2. Open **Scan a QR** and select a demo place. Read its story and choose **Collect card**.
+3. Switch to **Person’s QR** and collect a copy of a different card type.
+4. Collect the remaining cards to receive the completion bonus. Try collecting one again to see duplicate feedback.
+5. Open your personal card and choose **Share my card** to generate its QR and copy its link.
+
+You can paste a shared link or a code such as `place:beadwork` or `person:kaya-toast` into the scanner. A shared link works on another device when the site is reachable and the visitor has access. The current private deployment is owner-only; demo codes let you try both QR flows within the prototype.
+
+## Implementation and limits
+
+- **Browser-local progress:** cards and points are stored in local storage in the current browser. The app has no backend or cross-device collection sync. Resetting the deck requires confirmation.
+- **Draft matching:** the sum of the three zero-based answer indexes, modulo six, selects the personal card. Readings are creative reflections, not predictions or validated assessments.
+- **Copy-based sharing:** person QR links contain a card type, not questionnaire answers. They add a copy without removing the sender’s card. The app does not verify another card owner’s identity.
+- **Camera support:** scanning uses the native `BarcodeDetector` API where available and requires HTTPS or localhost, camera permission and hardware. Pasted links/codes and demo encounters are available in other browsers. Physical-camera scanning remains unverified.
+- **Illustrative place codes:** no physical QR installation, venue partnership, location verification or reward-redemption scheme is established. Cultural summaries link to credited sources; editorial and community review remains open.
+
+Branding, final matching rules and point values remain open. Further readings, games and real-world QR arrangements are future work. Encouraging exploration and social connection is the project’s aim, rather than a measured outcome.
+
+## Development checks
+
+```sh
 npm test
 npm run check
 ```
 
-Model and DOM interface checks cover matching, unique awards, duplicate handling, one-time completion, copy semantics, QR parsing, the questionnaire/shuffle/flip journey, collection and reset. They passed. The redesign also includes Chromium checks for the Three.js scene, card selection, the questionnaire/flip flow, mobile page overflow and reduced motion. Physical camera scanning remains unverified.
+Model and DOM checks cover questionnaire matching, QR parsing, unique-card awards, duplicates, the one-time completion bonus, copy semantics, the shuffle/draw/flip flow, collection and reset.
 
-Collection, further readings, and games are intended future deck uses. Detailed game mechanics, branding, actual point values and physical QR arrangements remain open.
+For browser checks, keep `npm run dev` running in another terminal, then run:
+
+```sh
+npm run test:browser
+```
+
+The browser test uses Playwright Core with an existing Chromium binary. The default path is `/usr/bin/chromium`; set `CHROMIUM_PATH` to your executable’s path if needed. It does not download a browser.
+
+The current prototype passed model, DOM, syntax and Chromium checks, including the WebGL scene, card selection and dragging, desktop and mobile layouts, reduced motion, the no-WebGL fallback, and the questionnaire-to-reveal journey. No script errors or mobile document overflow were observed in those checks.
+
+## Project structure
+
+| Path | Purpose |
+| --- | --- |
+| `dist/index.html` | App shell and navigation |
+| `dist/app.js` | Questionnaire, readings, QR flows and collection interface |
+| `dist/model.js` | Six-card content, matching, scoring and code parsing |
+| `dist/artwork.js` | Shared SVG card illustrations and ornamental backs |
+| `dist/style.css` | Responsive visual design |
+| `src/landing.js` | Editable Three.js landing scene |
+| `scripts/build-scene.js` | Bundles the scene into `dist/landing.js` with esbuild |
+| `scripts/package-preview.js` | Generates the standalone `prototype.html` |
+| `tests/` | Model, DOM and browser checks |
+| `.openai/hosting.json` | Existing Sites identity and static hosting configuration |
+
+Sites serves `dist/`. The hosting manifest retains the existing project ID for future deployments.
 
 ## Cultural sources
 
 - [Chicken rice — National Heritage Board](https://www.roots.gov.sg/ich-landing/ich/chicken-rice)
 - [Traditional breakfast of kaya and kopi — National Heritage Board](https://www.roots.gov.sg/ich-landing/ich/traditional-breakfast-of-kaya-and-kopi)
 - [Beyond Kaya Toast — Roots](https://www.roots.gov.sg/stories-landing/stories/beyond-kaya-toast/story)
-- [Singapore's changing wet markets — National Library Board](https://biblioasia.nlb.gov.sg/all-sections/vol-18-issue-1-apr-to-jun-2022-singapore-changing-wet-markets/)
+- [Singapore’s changing wet markets — National Library Board](https://biblioasia.nlb.gov.sg/all-sections/vol-18-issue-1-apr-to-jun-2022-singapore-changing-wet-markets/)
 - [Nyonya beadwork and embroidery — National Heritage Board](https://www.roots.gov.sg/ich-landing/ich/nyonya-beadwork-and-embroidery)
-- [Wayang kulit's intangible cultural heritage — Kaya](https://www.kaya.gov.sg/heritage/light-and-shadow--wayang-kulit-s-intangible-cultural-heritage/)
+- [Wayang kulit’s intangible cultural heritage — Kaya](https://www.kaya.gov.sg/heritage/light-and-shadow--wayang-kulit-s-intangible-cultural-heritage/)
 
-References inform content; no affiliation is implied and no source images have been reused.
+These references inform the cultural content. No affiliation is implied, and source images have not been reused.
 
-## AI and tool attribution
+## Credits
 
-Codex assisted concept development, source research, brief writing, and repository preparation. Web tools consulted cultural sources and related exploration experiences. Codex implemented this prototype, draft reflective readings, original SVG card artwork and automated checks. No generative image tool was used. QR generation uses the MIT-licensed qrcode-generator package.
+Codex assisted concept development, research, implementation, reflective reading text, original SVG artwork and automated checks. No generative image tool was used.
 
-
-## Visual direction — Everyday Arcana
-
-All six cards use original tarot-inspired SVG art: numbered borders, symbolic reading titles, celestial framing, tropical foliage and shophouse details. Jade, vermilion, ochre and paper tones draw on a Nanyang-inspired palette. These are contemporary interpretations, rather than reproductions of a particular artist’s work.
-
-The landing page takes visual cues from Persona’s graphic energy: oversized condensed typography, angular panels, dark ink against vermilion and sharp labels. Original content and artwork express the Singapore concept. Three.js renders textured 3D cards, supports drag-to-turn and selection, and disposes its GPU resources when leaving the landing page. Keyboard users can select the same six cards from the buttons below the scene. Reduced-motion mode keeps the scene still; lack of WebGL leaves a static illustrated fan available. Animations pause rendering when off-screen or hidden.
-
-`src/landing.js` is the editable Three.js source; `dist/artwork.js` supplies the shared SVG card art. `npm run build` bundles the scene with esbuild. Three.js is MIT licensed; Anton uses the SIL Open Font License. Included runtime license notices are in `dist/landing.js.LEGAL.txt` and `dist/vendor/ANTON-LICENSE.txt`.
-
-Browser checks: start `npm run dev` in one terminal, then run `npm run test:browser`. The test uses an existing Chromium binary (default `/usr/bin/chromium`; override with `CHROMIUM_PATH`). No browser download is required.
+The prototype uses Three.js and qrcode-generator under the MIT license, and the Anton font under the SIL Open Font License. Runtime notices are included in `dist/landing.js.LEGAL.txt`, `dist/vendor/qrcode.js` and `dist/vendor/ANTON-LICENSE.txt`.
