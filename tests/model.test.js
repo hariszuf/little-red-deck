@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {cards,DECK_SIZE,blank,restore,acquire,points,parseCode,match} from '../dist/model.js';
+import {cards,DECK_SIZE,blank,restore,acquire,points,parseCode,match,remember,sharedReading} from '../dist/model.js';
 import {cardSVG} from '../dist/artwork.js';
 test('only the twenty-second unique card awards the completion bonus',()=>{
  let state=blank();
@@ -37,4 +37,21 @@ test('QR parsing rejects malformed and unknown codes',()=>{for(const s of ['http
 test('every card is reachable through the three-question draft matching rule',()=>{
  const matches=new Set();for(let a=0;a<4;a++)for(let b=0;b<4;b++)for(let c=0;c<4;c++){const id=match([a,b,c]);assert.ok(cards.some(card=>card.id===id));assert.equal(match([a,b,c]),id);matches.add(id);}
  assert.equal(matches.size,22);assert.equal(match([0,0,0]),'chicken-rice');assert.throws(()=>match([0,0]));
+});
+
+test('memories stay separate, survive restore, can be deleted and do not affect scoring',()=>{
+ const state=acquire(blank(),'chicken-rice').state,story=cards[0].story;
+ const saved=remember(state,'  Lunch with Mum.  ');
+ assert.equal(restore(saved).memories['chicken-rice'],'Lunch with Mum.');
+ assert.equal(points(saved),points(state));assert.equal(cards[0].story,story);assert.deepEqual(state.memories,{});
+ assert.deepEqual(remember(saved,'').memories,{});assert.deepEqual(blank().memories,{});
+ assert.throws(()=>remember(blank(),'note'));assert.throws(()=>remember(state,'a'.repeat(601)));
+ assert.deepEqual(restore({...state,memories:{'chicken-rice':42,laksa:'ignored'}}).memories,{});
+});
+test('two-person reflections support different and identical cards without altering ownership',()=>{
+ const state=acquire(blank(),'chicken-rice').state,before=JSON.stringify(state);
+ assert.match(sharedReading('chicken-rice','five-foot-way').title,/Comfort meets support/);
+ assert.match(sharedReading('laksa','laksa').reflection,/same symbol/);
+ assert.equal(sharedReading('laksa','satay').prompts.length,2);
+ assert.throws(()=>sharedReading('unknown','laksa'));assert.equal(JSON.stringify(state),before);
 });

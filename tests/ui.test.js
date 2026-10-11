@@ -17,13 +17,22 @@ click('#begin');for(let i=0;i<3;i++){click('[data-answer="0"]');click('#next');}
 assert.match(document.querySelector('h1').textContent,/possibilities/);
 assert.equal(document.querySelectorAll('.deck-stage .playing-card').length,DECK_SIZE);
 click('#draw-action');assert.ok(document.querySelector('#draw-action').disabled);pending.shift()();
-click('#draw-action');assert.equal(document.querySelectorAll('#flip').length,1);click('#flip');
+click('#draw-action');assert.ok(document.querySelector('.cut-deck'));click('#draw-action');assert.equal(document.querySelectorAll('#flip').length,1);click('#flip');
 assert.equal(document.querySelector('#points').textContent,'10');assert.ok(JSON.parse(localStorage.getItem('lrd-v1')).personal);
 click('#share');assert.ok(document.querySelector('.qr svg'));click('.close');
 click('[data-nav="scan"]');click('[data-demo="kaya-toast"]');click('#collect');assert.equal(document.querySelector('#points').textContent,'20');
 click('[data-nav="scan"]');click('[data-demo="kaya-toast"]');assert.match(document.querySelector('#collect').textContent,/Already/);click('#collect');assert.equal(document.querySelector('#points').textContent,'20');
 for(const id of cards.slice(2).map(c=>c.id)){click('[data-nav="scan"]');click('[data-kind="person"]');click(`[data-demo="${id}"]`);assert.match(document.querySelector('#modal-body').textContent,/Their card stays with them/);click('#collect');}
 assert.equal(document.querySelector('#points').textContent,'270');assert.equal(document.querySelector('#count').textContent,'22/22');assert.ok(document.querySelector('.banner'));click('[data-collection-filter="Arts"]');assert.equal(document.querySelectorAll('[data-card]').length,6);click('[data-collection-filter="All"]');assert.equal(document.querySelectorAll('[data-card]').length,22);
+click('[data-nav="home"]');click('#try-memory');
+const memory='<img src=x onerror=alert(1)> Lunch with Mum.';
+document.querySelector('#card-memory').value=memory;click('#save-memory');click('.close');
+click('#try-memory');assert.equal(document.querySelector('#card-memory').value,memory);assert.equal(document.querySelector('#modal-body img'),null);
+click('#share-modal');assert.ok(!document.querySelector('#modal-body').textContent.includes(memory));click('.close');
+click('[data-go="together"]');const before=localStorage.getItem('lrd-v1');document.querySelector('#pair-second').value='five-foot-way';click('#read-pair');assert.match(document.querySelector('#pair-result').textContent,/Comfort meets support/);assert.equal(localStorage.getItem('lrd-v1'),before);
+click('[data-nav="scan"]');document.querySelector('#code').value='person:laksa';click('#code-go');click('#pair-scanned');assert.match(document.querySelector('#pair-result').textContent,/Comfort meets integration/);assert.equal(localStorage.getItem('lrd-v1'),before);
+click('[data-nav="home"]');click('#try-tactile');click('#simple-reveal');assert.equal(localStorage.getItem('lrd-v1'),before);
+click('[data-nav="home"]');click('#try-memory');click('#delete-memory');assert.equal(document.querySelector('#card-memory').value,'');assert.equal(JSON.parse(localStorage.getItem('lrd-v1')).memories['chicken-rice'],undefined);click('.close');
 click('[data-nav="scan"]');document.querySelector('#code').value='nonsense';click('#code-go');assert.match(document.querySelector('#scan-error').textContent,/isn’t part/);
 click('#reset');click('#cancel-reset');assert.equal(document.querySelector('#points').textContent,'270');click('#reset');click('#confirm-reset');assert.equal(document.querySelector('#points').textContent,'0');
 console.log('Interface checks passed: questionnaire, 22-card shuffle, flip, QR sharing, place/person collection, duplicates, bonus, invalid code and reset.');

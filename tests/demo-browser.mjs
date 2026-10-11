@@ -1,0 +1,23 @@
+import {chromium} from 'playwright-core';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-gpu']});
+const base=process.env.BASE_URL||'http://127.0.0.1:4173/';
+try{
+ const page=await browser.newPage({viewport:{width:390,height:844},hasTouch:true,isMobile:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>Object.defineProperty(window,'WebGLRenderingContext',{value:undefined}));await page.goto(base);console.log('Loaded demonstration');await page.locator('#try-tactile').click();for(let i=0;i<3;i++){await page.locator('[data-answer="0"]').click();await page.locator('#next').click();}
+ const client=await page.context().newCDPSession(page);
+ async function swipe(dx,dy){const el=page.locator('#tactile-deck');await el.scrollIntoViewIfNeeded();const b=await el.boundingBox(),x=b.x+b.width/2,y=b.y+b.height/2;await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});for(let n=1;n<=8;n++)await client.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx*n/8,y:y+dy*n/8}]});await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
+ await swipe(85,0);await page.waitForSelector('.shuffling');await page.waitForFunction(()=>document.querySelector('#draw-action')?.textContent.includes('Cut the deck'));
+ await swipe(-80,0);await page.waitForSelector('.cut-deck');await swipe(0,-90);await page.waitForSelector('#flip');await swipe(80,0);await page.waitForSelector('#share');assert.equal(await page.locator('#points').textContent(),'10');
+ console.log('Touch reveal passed');await page.locator('#try-memory').click();const note='A table with Mum. <img src=x onerror=alert(1)>';
+ await page.locator('#card-memory').fill(note);await page.locator('#save-memory').click();await page.locator('.close').click();await page.reload();await page.locator('#try-memory').click();assert.equal(await page.locator('#card-memory').inputValue(),note);assert.equal(await page.locator('#modal-body img').count(),0);
+ await page.locator('#share-modal').click();assert.ok(!(await page.locator('#modal-body').textContent()).includes(note));await page.locator('.close').click();
+ await page.locator('[data-go="together"]').click();await page.locator('#pair-second').selectOption('five-foot-way');await page.locator('#read-pair').click();assert.match(await page.locator('#pair-result').textContent(),/Comfort meets support/);
+ await page.screenshot({path:'/tmp/lrd-together-mobile.png',fullPage:true});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:'/tmp/lrd-together-desktop.png',fullPage:true});
+ await page.locator('[data-nav="scan"]').click();await page.locator('#code').fill('person:laksa');await page.locator('#code-go').click();await page.locator('#pair-scanned').click();assert.match(await page.locator('#pair-result').textContent(),/Comfort meets integration/);assert.equal(await page.locator('#points').textContent(),'10');
+ await page.locator('[data-nav="home"]').click();await page.locator('#try-tactile').click();await page.locator('#draw-action').focus();await page.keyboard.press('Enter');await page.locator('[data-nav="home"]').click();await page.locator('#try-tactile').click();await page.waitForTimeout(3200);assert.match(await page.locator('#draw-action').textContent(),/Shuffle/);
+ await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#simple-reveal').focus();await page.keyboard.press('Enter');await page.waitForSelector('#share');assert.equal(await page.locator('#points').textContent(),'10');
+ await page.locator('#try-memory').click();await page.locator('#delete-memory').click();await page.locator('.close').click();await page.reload();await page.locator('#try-memory').click();assert.equal(await page.locator('#card-memory').inputValue(),'');await page.locator('#card-memory').fill('Reset removes this');await page.locator('#save-memory').click();await page.locator('.close').click();await page.locator('#reset').click();await page.locator('#confirm-reset').click();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('lrd-v1')).memories),{});
+ assert.deepEqual(errors,[]);console.log('Demo browser checks passed: real touch shuffle/cut/draw/turn, keyboard and reduced-motion reveal, timer cancellation, memory persistence/deletion/reset/privacy, scanned pair and mobile layout.');
+}finally{await browser.close();}

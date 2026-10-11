@@ -14,6 +14,16 @@ A Singapore-inspired interactive card-reading and cultural collection prototype.
 
 The initial personal card earns points too. Duplicate cards earn no extra points, and the completion bonus is awarded once. A full deck earns **270 points**. Anyone who already earned the original six-card completion bonus keeps those 50 points as a legacy award, in addition to the new completion bonus; their maximum is 320 points.
 
+## Small interactive demonstration
+
+The landing page includes **Three ways to make it yours**:
+
+- **Tactile reveal:** answer the questionnaire, then drag sideways to shuffle and cut, upward to draw, and sideways to turn the card. Buttons provide every action, and **Simple reveal** skips the gestures and animation. Returning participants can replay with their retained personal card without earning duplicate points.
+- **Two-person reading:** select two cards in the demo, or scan a person's QR and choose **Read together** once you have a personal card. The combined reflection offers two reciprocal listening prompts, including when both people have the same card. No compatibility score is produced. Reading together does not collect cards or change ownership.
+- **Chicken-rice memory:** collect or open the chicken-rice card to save an optional note of up to 600 characters beside its unchanged cultural story. Edit, delete or skip it at any time. The note stays in this browser, is excluded from shared QR links, and is cleared by **Reset my deck**. If storage is unavailable, it lasts only for the current tab.
+
+These are designed prototype activities and original reflections. Personal memories are separate from cultural accounts. Collection routes, community submissions and practitioner audio remain future experiments.
+
 ## Design
 
 ### Nanyang-inspired tarot cards
@@ -107,11 +117,12 @@ For browser checks, keep `npm run dev` running in another terminal, then run:
 
 ```sh
 npm run test:browser
+node tests/demo-browser.mjs
 ```
 
 The browser test uses Playwright Core with an existing Chromium binary. The preview defaults to port 4173; set `BASE_URL` to test a server on another port. The Chromium default path is `/usr/bin/chromium`; set `CHROMIUM_PATH` to your executable’s path if needed. It does not download a browser.
 
-The current prototype passed model, DOM, syntax and Chromium checks, including the WebGL scene, card selection and dragging, desktop and mobile layouts, reduced motion, the no-WebGL fallback, and the questionnaire-to-reveal journey. No script errors or mobile document overflow were observed in those checks.
+The current prototype passed model, DOM, syntax and Chromium checks, including the WebGL scene, card selection and dragging, desktop and mobile layouts, reduced motion, the no-WebGL fallback, and the questionnaire-to-reveal journey. Demonstration checks also cover touch shuffle/cut/draw/turn, keyboard and reduced-motion reveal, interrupted shuffle cleanup, paired readings, and memory persistence, deletion, reset and exclusion from sharing. No script errors or mobile document overflow were observed in those checks.
 
 ## Project structure
 

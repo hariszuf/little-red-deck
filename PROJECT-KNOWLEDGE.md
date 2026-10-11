@@ -70,7 +70,7 @@ The scene supports dragging, card selection, keyboard-accessible preview buttons
 - `npm run build` bundles the Three.js scene, exports the SVGs and generates the standalone `prototype.html`.
 - The participant has requested committing and pushing work to GitHub. Keep the GitHub and Sites repositories separate when syncing source.
 
-The original six-card visual redesign was deployed successfully on 12 October. The current 22-card expansion is ready for publication after final build/export checks; consult Git history and Sites deployment status for the published revision. Shared Page tools are unavailable, so the team-facing Page update remains pending. This file and README provide local project continuity.
+The original six-card visual redesign was deployed successfully on 12 October. The 22-card expansion was published successfully. Consult Git history and Sites deployment status for the current published revision. Shared Page tools are unavailable, so the team-facing Page update remains pending. This file and README provide local project continuity.
 
 ## Validation
 
@@ -87,3 +87,15 @@ README retains all cultural links from the six-card prototype and the participan
 Codex assisted concept development, research, implementation, reflective text, illustrations, documentation and automated checks. Runtime dependencies are Three.js and qrcode-generator (MIT), plus the Anton font (SIL Open Font License), with notices distributed in `dist/`.
 
 Earlier Parcana source (https://github.com/CheeseBaiKia222/AiArcanaDm) is background only. The participant requested a fresh project; no earlier implementation was copied. Unrelated submission or reminders notes must not be imported into this project's evidence.
+
+## Small demonstration — 12 October 2026
+
+The participant explicitly requested implementation and deployment of the suggested small demonstration, superseding the prior ideation-only status for these three features:
+
+- Tactile reveal: pointer/touch drag to shuffle, cut, draw and turn; buttons for each action and a simple reveal shortcut. Reduced motion shortens the shuffle. Replaying retains the personal card and does not award points again. Navigation cancels unfinished shuffle timers.
+- Two-person reading: a demo selector supports any two cards, with the participant's personal card preselected when available. Person QR dialogs offer Read together when a personal card exists. A shared reflection and two reciprocal prompts invite listening, with no compatibility ranking. Identical pairs are supported. This action changes neither collection nor personal card.
+- Optional chicken-rice memory: a plain-text note up to 600 characters, available after collecting the card. It remains separate from the stable cultural story, persists only in browser storage, and supports save/edit/delete/skip. Notes are excluded from QR links and cleared with deck reset. No public sharing or backend is introduced.
+
+The landing page exposes all three under Three ways to make it yours. New automated checks cover memory validation and migration, paired reading content, unchanged scoring and ownership, and DOM flows. `tests/demo-browser.mjs` checks real browser touch input, keyboard/simple reveal, timer cancellation, persistence/deletion/reset, safe plain-text rendering, QR exclusion, scanned pairing and mobile overflow. Physical camera and participant validation remain open.
+
+Larger discovery routes, participatory collection activities, practitioner audio and collective storytelling remain future experiments. No public contribution or moderation system is implemented. Shared Page update remains unavailable.

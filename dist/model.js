@@ -284,7 +284,7 @@ export const DECK_SIZE = cards.length;
 export const CARD_POINTS = 10;
 export const COMPLETION_BONUS = 50;
 export const STORAGE_KEY = 'lrd-v1';
-export const blank = () => ({version:2,personal:null,owned:[],bonus:false,legacyBonus:0});
+export const blank = () => ({version:2,personal:null,owned:[],bonus:false,legacyBonus:0,memories:{}});
 export function restore(saved){
  const state=blank();
  if(!saved || !Array.isArray(saved.owned))return state;
@@ -296,6 +296,7 @@ export function restore(saved){
  state.legacyBonus=saved.version===2
   ? (saved.legacyBonus===COMPLETION_BONUS?COMPLETION_BONUS:0)
   : (saved.bonus===true&&cards.slice(0,6).every(c=>state.owned.includes(c.id))?COMPLETION_BONUS:0);
+ if(state.owned.includes('chicken-rice')&&typeof saved.memories?.['chicken-rice']==='string')state.memories['chicken-rice']=saved.memories['chicken-rice'].slice(0,600);
  return state;
 }
 export function acquire(state,id){
@@ -316,4 +317,22 @@ export function parseCode(input){
  const [kind,id,...extra]=code.split(':');
  if(extra.length||!['place','person'].includes(kind)||!cards.some(c=>c.id===id)) throw new Error('That code isn’t part of this deck. Try a demo code below.');
  return {kind,id};
+}
+
+export function remember(state,text){
+ if(!state.owned.includes('chicken-rice'))throw new Error('Collect the chicken-rice card first.');
+ if(typeof text!=='string'||text.length>600)throw new Error('Keep your memory within 600 characters.');
+ const memories={...state.memories};
+ if(text.trim())memories['chicken-rice']=text.trim();else delete memories['chicken-rice'];
+ return {...state,memories};
+}
+export function sharedReading(firstId,secondId){
+ const first=cards.find(c=>c.id===firstId),second=cards.find(c=>c.id===secondId);
+ if(!first||!second)throw new Error('Choose two cards from this deck.');
+ const same=first.id===second.id;
+ return {
+  title:same?`Two views of ${first.word.toLowerCase()}`:`${first.word} meets ${second.word.toLowerCase()}`,
+  reflection:same?`You both bring ${first.title.toLowerCase()} to the table. The same symbol can hold two different stories. Notice where your experiences meet and where they take different paths.`:`${first.name} brings ${first.word.toLowerCase()} into this conversation; ${second.name} brings ${second.word.toLowerCase()}. Imagine one small moment this week where there is room for both. Each person can offer a different way to begin.`,
+  prompts:[`Person one: share a moment when ${first.word.toLowerCase()} mattered to you. Person two: reflect back one thing you heard, then ask a curious question.`,`Swap roles. Person two: share what ${second.word.toLowerCase()} could look like in your life this week. Person one: listen, then name one small way you could offer support.`]
+ };
 }
