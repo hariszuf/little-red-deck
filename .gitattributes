@@ -1,0 +1,3 @@
+# Generated bundles embed upstream GLSL strings with their original indentation.
+dist/landing.js -whitespace
+prototype.html -whitespace

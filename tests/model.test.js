@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {cards,blank,acquire,points,parseCode,match} from '../dist/model.js';
+test('new cards award points, duplicates do not, sixth card gives one bonus',()=>{let state=blank();for(const [i,c] of cards.entries()){const r=acquire(state,c.id);state=r.state;assert.equal(r.award,i===5?60:10);const duplicate=acquire(state,c.id);assert.equal(duplicate.award,0);assert.deepEqual(duplicate.state,state);}assert.equal(points(state),110);});
+test('sharing keeps original personal card while adding a new type',()=>{let sender={...blank(),personal:cards[0].id,owned:[cards[0].id]};let receiver={...blank(),personal:cards[1].id,owned:[cards[1].id]};const copy=parseCode(`https://example.com/#card=person%3A${sender.personal}`);receiver=acquire(receiver,copy.id).state;assert.equal(sender.owned.length,1);assert.equal(receiver.personal,cards[1].id);assert.deepEqual(receiver.owned,[cards[1].id,cards[0].id]);});
+test('QR parsing rejects foreign, malformed and unknown codes',()=>{for(const s of ['https://example.com/','place:unknown','abc','friend:kaya-toast'])assert.throws(()=>parseCode(s));assert.deepEqual(parseCode('place:kaya-toast'),{kind:'place',id:'kaya-toast'});});
+test('questionnaire matches deterministically within the six-card deck',()=>{const matches=new Set();for(let a=0;a<4;a++)for(let b=0;b<4;b++)for(let c=0;c<4;c++){const id=match([a,b,c]);assert.ok(cards.some(card=>card.id===id));assert.equal(match([a,b,c]),id);matches.add(id);}assert.equal(matches.size,6);});
